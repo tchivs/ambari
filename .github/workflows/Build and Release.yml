@@ -3,7 +3,7 @@ name: Build and Release 2.7.*
 on:
   push:
     branches: 
-      - branch-2.7.7
+      - branch-2.7.*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
 
       - name: Extract tag name
         id: get_version
-        run: echo "VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\///')" >> $GITHUB_ENV
+        run: echo "VERSION=2.7.7" >> $GITHUB_ENV
 
       - name: Build Package
         run: |
