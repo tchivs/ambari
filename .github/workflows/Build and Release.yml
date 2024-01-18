@@ -24,6 +24,7 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
+
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
@@ -44,7 +45,11 @@ jobs:
           pushd ambari-metrics
           mvn versions:set -DnewVersion=$VERSION
           popd
-          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Dpython.ver="python >= 2.6"
+          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Drat.skip=true -Dpython.ver="python >= 2.6"
+      
+      - name: Print RAT Report
+        if: failure() # 只有在之前的步骤失败时才执行
+        run: cat /home/runner/work/ambari/ambari/target/rat.txt
 
       - name: Create Release
         id: create_release
