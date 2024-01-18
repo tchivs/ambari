@@ -27,6 +27,20 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
 
+      - name: Install Maven 3.9.6
+        run: |
+          wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+          tar -xvf apache-maven-3.9.6-bin.tar.gz
+          sudo mv apache-maven-3.9.6 /usr/local/apache-maven
+          rm apache-maven-3.9.6-bin.tar.gz
+          sudo update-alternatives --install /usr/bin/mvn mvn /usr/local/apache-maven/bin/mvn 1
+  
+      - name: Check versions
+        run: |
+          java -version
+          javac -version
+          mvn -version
+
       - name: Use Node.js v11.15.0
         uses: actions/setup-node@v4
         with:
@@ -41,7 +55,7 @@ jobs:
           pushd ambari-metrics
           mvn versions:set -DnewVersion=$VERSION
           popd
-          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Drat.skip=true -Dpython.ver="python >= 2.6" -X
+          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Drat.skip=true -Dpython.ver="python >= 2.6" -e -X
       
       - name: Print RAT Report
         if: failure() # 只有在之前的步骤失败时才执行
