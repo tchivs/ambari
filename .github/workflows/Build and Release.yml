@@ -26,12 +26,12 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
           cache: 'maven'
-
-      - name: Set up Python 2.7
+          
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '2.7'
-
+          python-version: '3.10'
+          
       - name: Install Maven 3.9.6
         run: |
           wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
