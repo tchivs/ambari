@@ -36,7 +36,7 @@ jobs:
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
-          path: ~/.m2/repository
+          path: ~/.m2/repository/org/apache
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-m2-
@@ -69,6 +69,12 @@ jobs:
       - name: Print RAT Report
         if: failure() # 只有在之前的步骤失败时才执行
         run: cat /home/runner/work/ambari/ambari/target/rat.txt
+
+        #列出m2目录的内容并按大小排序。
+      - name: List cached directories
+        run: |
+          echo "Listing the contents of the .m2/repository directory sorted by size:"
+          du -hs ~/.m2/repository/* | sort -hr
 
       - name: Create Release
         id: create_release
