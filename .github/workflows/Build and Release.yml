@@ -13,7 +13,7 @@ jobs:
           - platform: RHEL
             package_extension: 'rpm'
           - platform: Ubuntu
-            package_extension: 'deb'
+            package_extension: 'jdeb'
 
     steps:
       - name: Checkout code
@@ -25,17 +25,17 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
 
-      - name: Extract tag name
-        id: get_version
-        run: echo "VERSION=2.7.7" >> $GITHUB_ENV
-
+      - name: Set VERSION environment variable
+        run: echo "VERSION=1.0.0" >> $GITHUB_ENV
+      - name: Use VERSION environment variable
+        run: echo "The version is $VERSION"
       - name: Build Package
         run: |
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+          mvn versions:set -DnewVersion=$VERSION
           pushd ambari-metrics
-          mvn versions:set -DnewVersion=${{ steps.get_version.outputs.VERSION }}
+          mvn versions:set -DnewVersion=$VERSION
           popd
-          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=${{ steps.get_version.outputs.VERSION }} -DbuildNumber=${{ github.sha }} -DskipTests -Dpython.ver="python >= 2.6"
+          mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Dpython.ver="python >= 2.6"
 
       - name: Create Release
         id: create_release
@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.get_version.outputs.VERSION }}
+          release_name: Release $VERSION
           draft: false
           prerelease: false
 
@@ -55,5 +55,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./target/*.${{ matrix.package_extension }}
-          asset_name: ${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}.${{ matrix.package_extension }}
+          asset_name: $VERSION-${{ matrix.platform }}.${{ matrix.package_extension }}
           asset_content_type: application/octet-stream
