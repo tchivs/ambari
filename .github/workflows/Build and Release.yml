@@ -32,13 +32,6 @@ jobs:
         with:
           step: restore
           
-      - name: Build hello-world application with Maven
-        run: mvn --batch-mode --update-snapshots verify
-      - name: Save Maven cache
-        uses: skjolber/maven-cache-github-action@v1
-        with:
-          step: save
-          
       # - name: Install Maven 3.9.6
       #   run: |
       #     wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
@@ -56,12 +49,6 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-m2-
 
-      - name: Check versions
-        run: |
-          java -version
-          javac -version
-          mvn -version
-          python --version
 
       - name: Use Node.js v14
         uses: actions/setup-node@v4
@@ -70,6 +57,13 @@ jobs:
       - name: npm install
         run: |
           npm install -g brunch
+
+      - name: Check versions
+        run: |
+          java -version
+          mvn -version
+          python --version
+          npm --version
 
       - name: Use VERSION environment variable
         run: echo "The version is $VERSION"
@@ -86,6 +80,10 @@ jobs:
         if: failure() # 只有在之前的步骤失败时才执行
         run: cat /home/runner/work/ambari/ambari/target/rat.txt
 
+      - name: Save Maven cache
+        uses: skjolber/maven-cache-github-action@v1
+        with:
+          step: save
         #列出m2目录的内容并按大小排序。
       - name: List cached directories
         run: |
