@@ -19,11 +19,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Python2
-        uses: actions/setup-python@v2
-        with:
-          python-version: '2.7'
           
       - name: Set up JDK 8
         uses: actions/setup-java@v4
@@ -46,6 +41,7 @@ jobs:
           java -version
           javac -version
           mvn -version
+          python --version
 
       - name: Use Node.js v14
         uses: actions/setup-node@v4
