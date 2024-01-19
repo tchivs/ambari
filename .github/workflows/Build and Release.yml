@@ -29,26 +29,6 @@ jobs:
           java-version: 8
           maven-version: 3.9.6
 
-      # - name: Install Maven 3.9.6
-      #   run: |
-      #     wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
-      #     tar -xvf apache-maven-3.9.6-bin.tar.gz
-      #     sudo mv apache-maven-3.9.6 /usr/local/apache-maven
-      #     rm apache-maven-3.9.6-bin.tar.gz
-      #     sudo update-alternatives --install /usr/bin/mvn mvn /usr/local/apache-maven/bin/mvn 1
-
-
-
-      # 缓存 Maven 依赖项
-      # - name: Cache Maven packages
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.m2/repository/org/apache
-      #     key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-m2-
-
-
       - name: Use Node.js v14
         uses: actions/setup-node@v4
         with:
@@ -74,6 +54,7 @@ jobs:
           mvn versions:set -DnewVersion=$VERSION
           popd
           mvn -B clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DnewVersion=$VERSION -DbuildNumber=${{ github.sha }} -DskipTests -Drat.skip=true -Dpython.ver="python >= 2.6"
+        shell: bash
       
         #列出m2目录的内容并按大小排序。
       - name: List cached directories
