@@ -16,33 +16,19 @@ jobs:
             package_extension: 'rpm'
           - platform: Ubuntu
             package_extension: 'jdeb'
-      inputs:
-        cache-path: |
-          ~/.m2/repository
-          ~/.npm
-        cache-path-add: |
-          ~/.cache/pip
-          ~/.cache/brunch
-        cache-prefix: |
-          ${{ runner.os }}-jdk${{ inputs.java-version }}-${{ inputs.java-distribution }}-maven${{ inputs.maven-version }}-
+
     env:
       VERSION: 2.7.7.0.0
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
           
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@1.11.0
         with:
           java-version: 8
           maven-version: 3.96
-      - uses: actions/cache
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.npm
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2-
+
       # - name: Install Maven 3.9.6
       #   run: |
       #     wget https://downloads.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
