@@ -22,7 +22,9 @@ jobs:
     steps:
       # - name: Checkout code
       #   uses: actions/checkout@v4
-          
+      - name: Install RPM
+        run: sudo apt-get install rpm
+    
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.11.0
         with:
