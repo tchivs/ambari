@@ -27,7 +27,7 @@ jobs:
         uses: s4u/setup-maven-action@v1.11.0
         with:
           java-version: 8
-          maven-version: 3.96
+          maven-version: 3.9.6
 
       # - name: Install Maven 3.9.6
       #   run: |
