@@ -3,7 +3,7 @@ name: Build and Release 2.8.*
 on:
   push:
     branches: 
-      - branch-2.8.*
+      - branch-2.8
 jobs:
   build:
     runs-on: ubuntu-latest
