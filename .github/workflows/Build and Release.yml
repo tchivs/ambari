@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 'centos:latest'
     strategy:
       matrix:
         include:
@@ -23,7 +22,7 @@ jobs:
         with:
           python-version: '2.7'
           run:
-            apt-get install python2.7-dev
+            sudo apt-get install python2.7-dev
 
 
       - name: Setup Maven Action
