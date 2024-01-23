@@ -23,8 +23,7 @@ jobs:
         with:
           python-version: '2.7'
           run:
-            apt-get install sudo -y
-            sudo apt-get install python2.7-dev
+            apt-get install python2.7-dev
 
 
       - name: Setup Maven Action
