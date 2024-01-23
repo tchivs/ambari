@@ -23,6 +23,9 @@ jobs:
       - uses: LizardByte/setup-python-action@master
         with:
           python-version: '2.7'
+          run:
+            sudo apt-get install python2.7-dev
+
 
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.11.0
