@@ -1,0 +1,84 @@
+name: Build and Release 2.8.*
+
+on:
+  push:
+    branches: 
+      - branch-2.8.*
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 'centos:latest'
+    strategy:
+      matrix:
+        include:
+          - platform: RHEL
+            package_extension: 'rpm'
+
+    env:
+      VERSION: 2.8.0.0.0
+    steps:
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+      - uses: LizardByte/setup-python-action@master
+        with:
+          python-version: '2.7'
+          run:
+            sudo apt-get install python2.7-dev
+
+
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.11.0
+        with:
+          java-version: 8
+          maven-version: 3.9.6
+
+      - name: Use Node.js v14
+        uses: actions/setup-node@v4
+        with:
+          node-version: v14
+      - name: npm install
+        run: |
+          npm install -g brunch
+
+      - name: Check versions
+        run: |
+          java -version
+          mvn -version
+          python --version
+          npm --version
+
+      - name: Use VERSION environment variable
+        run: echo "The version is $VERSION"
+
+      - name: Build Package
+        run: |
+          mvn clean install ${{ matrix.package_extension }}:${{ matrix.package_extension }} -DskipTests -Drat.skip=true
+
+        shell: bash
+      
+        #列出m2目录的内容并按大小排序。
+      - name: List cached directories
+        run: |
+          echo "Listing the contents of the .m2/repository directory sorted by size:"
+          du -hs ~/.m2/repository/* | sort -hr
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release $VERSION
+          draft: false
+          prerelease: false
+
+      - name: Upload Package to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/*.${{ matrix.package_extension }}
+          asset_name: $VERSION-${{ matrix.platform }}.${{ matrix.package_extension }}
+          asset_content_type: application/octet-stream
